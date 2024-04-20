@@ -7,46 +7,36 @@ describe("BalanceRepository", () => {
     balanceRepository = new BalanceRepository();
   });
 
-  test("getBalance should return 0 for non-existent address", () => {
-    const address = "0x123";
-    expect(balanceRepository.getBalance(address)).toBe(0);
+  describe("getBalance", () => {
+    it("should return 0 for non-existent address", () => {
+      expect(balanceRepository.getBalance("0x123")).toBe(0);
+    });
+
+    it("should return the balance for an existing address", () => {
+      balanceRepository.updateBalance("0x456", 100);
+      expect(balanceRepository.getBalance("0x456")).toBe(100);
+    });
   });
 
-  test("transfer should update balances correctly", () => {
-    const fromAddress = "0x456";
-    const toAddress = "0x789";
-    const amount = 100;
+  describe("updateBalance", () => {
+    it("should update the balance for a valid address", () => {
+      balanceRepository.updateBalance("0x789", 50);
+      expect(balanceRepository.getBalance("0x789")).toBe(50);
+    });
 
-    balanceRepository.balances.set(fromAddress, 200);
-    balanceRepository.transfer(fromAddress, toAddress, amount);
+    it("should not update the balance for a negative value", () => {
+      const consoleWarnSpy = jest
+        .spyOn(console, "warn")
+        .mockImplementation(() => {});
 
-    expect(balanceRepository.getBalance(fromAddress)).toBe(100); // 200 - 100 = 100
-    expect(balanceRepository.getBalance(toAddress)).toBe(100); // 0 + 100 = 100
-  });
+      balanceRepository.updateBalance("0xabc", -10);
 
-  test("transfer should not update balances if insufficient balance", () => {
-    const fromAddress = "0xabc";
-    const toAddress = "0xdef";
-    const amount = 200;
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        "Failed to update the balance, please check the value at -10!"
+      );
+      expect(balanceRepository.getBalance("0xabc")).toBe(0);
 
-    balanceRepository.balances.set(fromAddress, 100);
-    balanceRepository.transfer(toAddress, fromAddress, amount);
-
-    expect(balanceRepository.getBalance(fromAddress)).toBe(100); // Should remain unchanged
-    expect(balanceRepository.getBalance(toAddress)).toBe(0); // Should remain unchanged
-  });
-
-  test("transfer should ignore transfer if sender and receiver addresses are the same", () => {
-    const address = "0x123";
-    const amount = 100;
-
-    // Set initial balance for the address
-    balanceRepository.balances.set(address, 200);
-
-    // Attempt transfer with sender and receiver addresses being the same
-    balanceRepository.transfer(address, address, amount);
-
-    // Expect balance to remain unchanged
-    expect(balanceRepository.getBalance(address)).toBe(200); // Balance should remain unchanged
+      consoleWarnSpy.mockRestore();
+    });
   });
 });

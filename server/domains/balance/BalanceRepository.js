@@ -9,18 +9,16 @@ class BalanceRepository {
     return this.balances.get(address) || 0;
   }
 
-  transfer(fromAddress, toAddress, amount) {
-    const fromBalance = this.getBalance(fromAddress);
-    if (fromBalance < amount || fromAddress === toAddress) {
+  updateBalance(address, balance) {
+    if (balance < 0) {
       console.warn(
-        `Failed to execute the transfer, please check the balance at ${fromAddress} and payment details!`
+        `Failed to update the balance, please check the value at ${balance}!`
       );
 
       return;
     }
 
-    this.balances.set(fromAddress, fromBalance - amount);
-    this.balances.set(toAddress, this.getBalance(toAddress) + amount);
+    this.balances.set(address, balance);
   }
 }
 
