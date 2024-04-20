@@ -1,6 +1,3 @@
-const AccountRepository = require("../account/AccountRepository");
-const BalanceRepository = require("./BalanceRepository");
-
 class BalanceService {
   constructor(accountRepository, balanceRepository) {
     this.accountRepository = accountRepository;
@@ -11,7 +8,6 @@ class BalanceService {
       this.balanceRepository.updateBalance(address, balance);
       console.log(`Account ${address} balance initilised to ${balance}.`);
     });
-    this.balances = this.balanceRepository.balances;
   }
 
   transfer(fromAddress, toAddress, amount) {
@@ -27,6 +23,7 @@ class BalanceService {
     const toBalance = this.balanceRepository.getBalance(toAddress);
     this.balanceRepository.updateBalance(fromAddress, fromBalance - amount);
     this.balanceRepository.updateBalance(toAddress, toBalance + amount);
+    console.log(`Transaction from ${fromAddress} to ${toAddress} done.`);
   }
 }
 

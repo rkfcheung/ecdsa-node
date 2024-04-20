@@ -13,11 +13,10 @@ const BalanceService = require("./domains/balance/BalanceService");
 const accountRepository = new AccountRepository();
 const balanceRepository = new BalanceRepository();
 const balanceService = new BalanceService(accountRepository, balanceRepository);
-const balances = Object.fromEntries(balanceService.balances);
 
 app.get("/balance/:address", (req, res) => {
   const { address } = req.params;
-  const balance = balances[address] || 0;
+  const balance = balanceRepository.getBalance(address);
   res.send({ balance });
 });
 
@@ -27,12 +26,11 @@ app.post("/send", (req, res) => {
   setInitialBalance(sender);
   setInitialBalance(recipient);
 
-  if (balances[sender] < amount) {
+  if (balanceRepository.getBalance(sender) < amount) {
     res.status(400).send({ message: "Not enough funds!" });
   } else {
-    balances[sender] -= amount;
-    balances[recipient] += amount;
-    res.send({ balance: balances[sender] });
+    balanceService.transfer(sender, recipient, amount);
+    res.send({ balance: balanceRepository.getBalance(sender) });
   }
 });
 
@@ -41,7 +39,7 @@ app.listen(port, () => {
 });
 
 function setInitialBalance(address) {
-  if (!balances[address]) {
-    balances[address] = 0;
+  if (!accountRepository.getAccount(address)) {
+    balanceRepository.updateBalance(address, 0);
   }
 }

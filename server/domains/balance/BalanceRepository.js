@@ -1,5 +1,3 @@
-const Balance = require("./Balance");
-
 class BalanceRepository {
   constructor() {
     this.balances = new Map();
