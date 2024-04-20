@@ -4,7 +4,13 @@ describe("AccountRepository", () => {
   let accountRepository;
 
   beforeEach(() => {
+    spy = jest.spyOn(console, "log").mockImplementation(() => {});
+
     accountRepository = new AccountRepository();
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
   });
 
   test("constructor should initialize accounts with capacity", () => {

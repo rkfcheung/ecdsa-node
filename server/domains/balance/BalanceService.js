@@ -6,10 +6,12 @@ class BalanceService {
     this.accountRepository = accountRepository;
     this.balanceRepository = balanceRepository;
 
-    this.accountRepository.list().forEach((account) => {
-      const extra = Math.floor(Math.random() * 3) * 25;
-      this.balanceRepository.updateBalance(account.address, 50 + extra);
+    this.accountRepository.list().forEach((address) => {
+      const balance = 50 + Math.floor(Math.random() * 3) * 25;
+      this.balanceRepository.updateBalance(address, balance);
+      console.log(`Account ${address} balance initilised to ${balance}.`);
     });
+    this.balances = this.balanceRepository.balances;
   }
 
   transfer(fromAddress, toAddress, amount) {

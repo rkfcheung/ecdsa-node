@@ -8,6 +8,8 @@ describe("BalanceService", () => {
   let balanceService;
 
   beforeEach(() => {
+    spy = jest.spyOn(console, "log").mockImplementation(() => {});
+
     accountRepository = new AccountRepository();
     balanceRepository = new BalanceRepository();
     balanceService = new BalanceService(accountRepository, balanceRepository);
@@ -15,11 +17,11 @@ describe("BalanceService", () => {
     // Mocking the list method of accountRepository
     accountRepository.list = jest
       .fn()
-      .mockReturnValue([
-        { address: "0x123" },
-        { address: "0x456" },
-        { address: "0x789" },
-      ]);
+      .mockReturnValue(["0x123", "0x456", "0x789"]);
+  });
+
+  afterEach(() => {
+    spy.mockRestore();
   });
 
   describe("transfer", () => {

@@ -6,11 +6,14 @@ const port = 3042;
 app.use(cors());
 app.use(express.json());
 
-const balances = {
-  "0x1": 100,
-  "0x2": 50,
-  "0x3": 75,
-};
+const AccountRepository = require("./domains/account/AccountRepository");
+const BalanceRepository = require("./domains/balance/BalanceRepository");
+const BalanceService = require("./domains/balance/BalanceService");
+
+const accountRepository = new AccountRepository();
+const balanceRepository = new BalanceRepository();
+const balanceService = new BalanceService(accountRepository, balanceRepository);
+const balances = Object.fromEntries(balanceService.balances);
 
 app.get("/balance/:address", (req, res) => {
   const { address } = req.params;
