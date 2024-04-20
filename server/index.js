@@ -23,9 +23,6 @@ app.get("/balance/:address", (req, res) => {
 app.post("/send", (req, res) => {
   const { sender, recipient, amount } = req.body;
 
-  setInitialBalance(sender);
-  setInitialBalance(recipient);
-
   if (balanceRepository.getBalance(sender) < amount) {
     res.status(400).send({ message: "Not enough funds!" });
   } else {
@@ -37,9 +34,3 @@ app.post("/send", (req, res) => {
 app.listen(port, () => {
   console.log(`Listening on port ${port}!`);
 });
-
-function setInitialBalance(address) {
-  if (!accountRepository.getAccount(address)) {
-    balanceRepository.updateBalance(address, 0);
-  }
-}
