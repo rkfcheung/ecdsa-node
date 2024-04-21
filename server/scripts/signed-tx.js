@@ -32,7 +32,6 @@ const signedTransaction = {
   signature: signature,
   transactionHash: transactionHash,
 };
-
 console.log("Signed Transaction:", signedTransaction);
 
 // Step 5: Verify the signed transaction
