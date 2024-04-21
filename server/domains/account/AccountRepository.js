@@ -17,7 +17,7 @@ class AccountRepository {
   }
 
   getAccount(address) {
-    return this.accounts.get(address);
+    return this.accounts.get(address) || null;
   }
 
   list() {
