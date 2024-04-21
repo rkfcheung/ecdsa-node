@@ -8,7 +8,11 @@ class AccountRepository {
     for (let i = 0; i < this.CAPACITY; i++) {
       const account = new Account();
       this.accounts.set(account.address, account);
-      console.log(`Account ${account.address} created.`);
+      console.log(
+        `Account ${
+          account.address
+        } created (${account.getPrivateKey()}, ${account.getPublicKey()}).`
+      );
     }
   }
 
