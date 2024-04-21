@@ -1,19 +1,20 @@
+const { bytesToHex } = require("ethereum-cryptography/utils");
 const { secp256k1 } = require("ethereum-cryptography/secp256k1");
-const uint8ArrayToHex = require("../../utils");
+const toAddress = require("../../utils");
 
 class Account {
   constructor() {
     this.privateKey = secp256k1.utils.randomPrivateKey();
     this.publicKey = secp256k1.getPublicKey(this.privateKey);
-    this.address = "0x" + uint8ArrayToHex(this.publicKey.slice(1), -20);
+    this.address = toAddress(this.publicKey);
   }
 
   getPrivateKey() {
-    return uint8ArrayToHex(this.privateKey);
+    return bytesToHex(this.privateKey);
   }
 
   getPublicKey() {
-    return uint8ArrayToHex(this.publicKey);
+    return bytesToHex(this.publicKey);
   }
 }
 
